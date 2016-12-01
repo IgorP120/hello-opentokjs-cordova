@@ -28,12 +28,11 @@ var app = {
   onDeviceReady: function() {
     // Just for iOS devices.
     if (window.device.platform === 'iOS') {
-      showMe(cordova.plugins.iosrtc);
-      showMe(cordova.plugins.iosrtc.debug);
+      showMe('iosrtc: ' + cordova.plugins.iosrtc);
       cordova.plugins.iosrtc.debug.enable('iosrtc*');
       cordova.plugins.iosrtc.registerGlobals();
       window.OT = cordova.require('cordova-plugin-opentokjs.OpenTokClient');
-      showMe(window.OT);
+      showMe('OT: ' + window.OT);
     }
 
     OT.setLogLevel(OT.DEBUG);
@@ -66,6 +65,7 @@ var app = {
       app.subscriber = app.session.subscribe(event.stream, 'subscriber');
       app.isSubscribing = true;
       showMe('onStreamCreated');
+      showMe('subscriber: ' + JSON.stringify(app.subscriber));
     }
   },
 
