@@ -28,9 +28,12 @@ var app = {
   onDeviceReady: function() {
     // Just for iOS devices.
     if (window.device.platform === 'iOS') {
+      showMe(cordova.plugins.iosrtc);
+      showMe(cordova.plugins.iosrtc.debug);
       cordova.plugins.iosrtc.debug.enable('iosrtc*');
       cordova.plugins.iosrtc.registerGlobals();
       window.OT = cordova.require('cordova-plugin-opentokjs.OpenTokClient');
+      showMe(window.OT);
     }
 
     OT.setLogLevel(OT.DEBUG);
@@ -40,23 +43,29 @@ var app = {
 
   initializePublisher: function() {
     app.publisher = OT.initPublisher('publisher');
+    showMe('initializePublisher');
   },
 
   initializeSession: function() {
     app.session = OT.initSession(app.config.apiKey, app.config.sessionId);
     app.session.on('streamCreated', app.onStreamCreated);
     app.session.on('streamDestroyed', app.onStreamDestroyed);
+    showMe('initializeSession');
     app.session.connect(app.config.token, app.onSessionConnected);
+    showMe('connected-1');
   },
 
   onSessionConnected: function(event) {
+    showMe('connected-2');
     app.session.publish(app.publisher);
+    showMe('published');
   },
 
   onStreamCreated: function(event) {
     if (!app.isSubscribing) {
       app.subscriber = app.session.subscribe(event.stream, 'subscriber');
       app.isSubscribing = true;
+      showMe('onStreamCreated');
     }
   },
 
@@ -70,3 +79,9 @@ var app = {
 };
 
 app.initialize();
+
+var showAlerts = true;
+var showMe = function(text) {
+  if (!showAlerts) return;
+  alert(text);
+}
